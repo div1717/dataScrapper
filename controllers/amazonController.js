@@ -5,8 +5,8 @@ let cacheObj = {};
 
 const scrape = async (req, res) => {
   try {
-    const { query, sort } = req.query;
-    let key = `${query}~*~${sort}`;
+    const { query, sort, num } = req.query;
+    let key = `${query}~*~${sort}~*~${num}`;
     if (cacheObj[key]) {
       return res.json(cacheObj[key]);
     }
@@ -77,9 +77,19 @@ const scrape = async (req, res) => {
         return { price, productUrl, title, rating, reviews };
       })
     );
-    const filteredProductsData = productsData.filter(
+    let filteredProductsData = productsData.filter(
       (product) => product !== null
     );
+
+    if (num == null) {
+      filteredProductsData = productsData
+        .filter((product) => product !== null)
+        .slice(0, 3);
+    } else if (num < filteredProductsData.length) {
+      filteredProductsData = productsData
+        .filter((product) => product !== null)
+        .slice(0, num);
+    }
 
     await browser.close();
     cacheObj[key] = { filteredProductsData };

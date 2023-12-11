@@ -5,13 +5,12 @@ let cacheObj = {};
 
 const scrape = async (req, res) => {
   try {
-    const { query, sort } = req.query;
-    let key = `${query}~*~${sort}`;
+    const { query, sort, num } = req.query;
+    let key = `${query}~*~${sort}~*~${num}`;
     if (cacheObj[key]) {
       return res.json(cacheObj[key]);
     }
     const nykaaUrl = generateNykaaUrl(query, sort);
-    console.log(nykaaUrl);
 
     const browser = await puppeteer.launch({
       executablePath:
@@ -28,7 +27,7 @@ const scrape = async (req, res) => {
       nykaaConstants.PRODUCT_ELEMENT_SELECTOR
     );
 
-    console.log(productElements);
+    // console.log(productElements);
 
     // Extracting prices and ratings for each product
     const productsData = await Promise.all(
@@ -37,6 +36,9 @@ const scrape = async (req, res) => {
         const priceElement = await productElement.$(
           nykaaConstants.PRICE_SELECTOR
         );
+        if (!priceElement) {
+          return null;
+        }
         const price = await priceElement.evaluate((node) =>
           node.innerText.trim()
         );
@@ -45,6 +47,9 @@ const scrape = async (req, res) => {
         const titleElement = await productElement.$(
           nykaaConstants.TITLE_SELECTOR
         );
+        if (!titleElement) {
+          return null;
+        }
         const title = await titleElement.evaluate((node) =>
           node.innerText.trim()
         );
@@ -73,15 +78,32 @@ const scrape = async (req, res) => {
 
         // url;
         const urlElement = await productElement.$(nykaaConstants.URL_SELECTOR);
+        if (!urlElement) {
+          return null;
+        }
         const productUrl = await urlElement.evaluate((node) => node.href);
 
         return { price, title, reviewCount, rating, productUrl };
       })
     );
 
+    let filteredProductsData = productsData.filter(
+      (product) => product !== null
+    );
+
+    if (num == null) {
+      filteredProductsData = productsData
+        .filter((product) => product !== null)
+        .slice(0, 3);
+    } else if (num < filteredProductsData.length) {
+      filteredProductsData = productsData
+        .filter((product) => product !== null)
+        .slice(0, num);
+    }
+
     await browser.close();
-    cacheObj[key] = { productsData };
-    res.json({ productsData });
+    cacheObj[key] = { filteredProductsData };
+    res.json({ filteredProductsData });
   } catch (error) {
     console.error("Error during scraping:", error);
     res.status(500).json({ error: "Internal Server Error" });

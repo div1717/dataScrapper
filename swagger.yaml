@@ -16,13 +16,19 @@ paths:
       parameters:
         - name: query
           in: query
-          description: The keyword to search on nykaa
+          description: The keyword to search on nykaa(e.g lip stick, black shoes)
           required: true
           schema:
             type: string
         - name: sort
           in: query
-          description: The sorting order (e.g., highToLow)
+          description: The sorting order (e.g reviewAndRating)
+          required: false
+          schema:
+            type: string
+        - name: num
+          in: query
+          description: The number of products
           required: false
           schema:
             type: string
@@ -36,13 +42,19 @@ paths:
       parameters:
         - name: query
           in: query
-          description: The keyword to search on flipkart
+          description: The keyword to search on flipkart(e.g laptops, mobile phones)
           required: true
           schema:
             type: string
         - name: sort
           in: query
-          description: The sorting order (e.g., highToLow)
+          description: The sorting order (e.g highToLow)
+          required: false
+          schema:
+            type: string
+        - name: num
+          in: query
+          description: The number of products
           required: false
           schema:
             type: string
@@ -56,13 +68,19 @@ paths:
       parameters:
         - name: query
           in: query
-          description: The keyword to search on amazon
+          description: The keyword to search on amazon(e.g laptops and mobile phones)
           required: true
           schema:
             type: string
         - name: sort
           in: query
-          description: The sorting order (e.g., highToLow)
+          description: The sorting order (e.g highToLow)
+          required: false
+          schema:
+            type: string
+        - name: num
+          in: query
+          description: The number of products
           required: false
           schema:
             type: string
@@ -76,13 +94,19 @@ paths:
       parameters:
         - name: query
           in: query
-          description: The keyword to search on jiomart
+          description: The keyword to search on jiomart(e.g laptops and black shoes)
           required: true
           schema:
             type: string
         - name: sort
           in: query
-          description: The sorting order (e.g., highToLow)
+          description: The sorting order (e.g highToLow)
+          required: false
+          schema:
+            type: string
+        - name: num
+          in: query
+          description: The number of products
           required: false
           schema:
             type: string
@@ -96,13 +120,19 @@ paths:
       parameters:
         - name: query
           in: query
-          description: The keyword to search on Snapdeal
+          description: The keyword to search on Snapdeal(e.g black shoes and mobile phones)
           required: true
           schema:
             type: string
         - name: sort
           in: query
-          description: The sorting order (e.g., highToLow)
+          description: The sorting order (e.g highToLow)
+          required: false
+          schema:
+            type: string
+        - name: num
+          in: query
+          description: The number of products
           required: false
           schema:
             type: string

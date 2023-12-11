@@ -5,8 +5,8 @@ let cacheObj = {};
 
 const scrape = async (req, res) => {
   try {
-    const { query, sort } = req.query;
-    let key = `${query}~*~${sort}`;
+    const { query, sort, num } = req.query;
+    let key = `${query}~*~${sort}~*~${num}`;
     if (cacheObj[key]) {
       return res.json(cacheObj[key]);
     }
@@ -29,6 +29,9 @@ const scrape = async (req, res) => {
         const priceElement = await productElement.$(
           flipkartConstants.PRICE_SELECTOR
         );
+        if (!priceElement) {
+          return null;
+        }
         const price = await priceElement.evaluate((node) =>
           node.innerText.trim()
         );
@@ -43,6 +46,9 @@ const scrape = async (req, res) => {
         const titleElement = await productElement.$(
           flipkartConstants.TITLE_SELECTOR
         );
+        if (!titleElement) {
+          return null;
+        }
         const title = await titleElement.evaluate((node) =>
           node.innerText.trim()
         );
@@ -57,15 +63,32 @@ const scrape = async (req, res) => {
         const urlElement = await productElement.$(
           flipkartConstants.URL_SELECTOR
         );
+        if (!urlElement) {
+          return null;
+        }
         const productUrl = await urlElement.evaluate((node) => node.href);
 
         return { price, title, productUrl, rating, review };
       })
     );
 
+    let filteredProductsData = productsData.filter(
+      (product) => product !== null
+    );
+
+    if (num == null) {
+      filteredProductsData = productsData
+        .filter((product) => product !== null)
+        .slice(0, 3);
+    } else if (num < filteredProductsData.length) {
+      filteredProductsData = productsData
+        .filter((product) => product !== null)
+        .slice(0, num);
+    }
+
     await browser.close();
-    cacheObj[key] = { productsData };
-    res.json({ productsData });
+    cacheObj[key] = { filteredProductsData };
+    res.json({ filteredProductsData });
   } catch (error) {
     console.error("Error during scraping:", error);
     res.json({ error: "Internal Server Error" });
