@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const snapdealConstants = require("../constants/snapdealConstants");
 const { generateSnapdealUrl } = require("../utils/urlGenerator");
-const cacheObj = {};
+let cacheObj = {};
 
 const scrape = async (req, res) => {
   try {

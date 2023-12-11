@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const flipkartConstants = require("../constants/flipkartConstants");
 const { generateFlipkartUrl } = require("../utils/urlGenerator");
-const cacheObj = {};
+let cacheObj = {};
 
 const scrape = async (req, res) => {
   try {

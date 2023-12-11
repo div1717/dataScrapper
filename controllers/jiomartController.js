@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const jiomartConstants = require("../constants/jiomartConstants");
 const { generateJiomartUrl } = require("../utils/urlGenerator");
-const cacheObj = {};
+let cacheObj = {};
 
 const scrape = async (req, res) => {
   try {
