@@ -1,15 +1,25 @@
 const puppeteer = require("puppeteer");
 const snapdealConstants = require("../constants/snapdealConstants");
 const { generateSnapdealUrl } = require("../utils/urlGenerator");
+const cacheObj = {};
 
 const scrape = async (req, res) => {
   try {
     const { query, sort } = req.query;
+    let key = `${query}~*~${sort}`;
+    if (cacheObj[key]) {
+      return res.json(cacheObj[key]);
+    }
     const url = generateSnapdealUrl(query, sort);
 
     console.log(url);
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -86,6 +96,7 @@ const scrape = async (req, res) => {
     );
 
     await browser.close();
+    cacheObj[key] = { productsData };
     res.json({ productsData });
   } catch (error) {
     console.error("Error during scraping:", error);
@@ -93,4 +104,7 @@ const scrape = async (req, res) => {
   }
 };
 
+setInterval(() => {
+  cacheObj = {};
+}, 1000 * 60 * 10);
 module.exports = { scrape };

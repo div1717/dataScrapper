@@ -1,13 +1,22 @@
 const puppeteer = require("puppeteer");
 const amazonConstants = require("../constants/amazonConstants");
 const { generateAmazonUrl } = require("../utils/urlGenerator");
-
+const cacheObj = {};
 const scrape = async (req, res) => {
   try {
     const { query, sort } = req.query;
+    let key = `${query}~*~${sort}`;
+    if (cacheObj[key]) {
+      return res.json(cacheObj[key]);
+    }
     const amazonUrl = generateAmazonUrl(query, sort);
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
     const page = await browser.newPage();
 
     await page.goto(amazonUrl);
@@ -72,11 +81,14 @@ const scrape = async (req, res) => {
     );
 
     await browser.close();
+    cacheObj[key] = { filteredProductsData };
     res.json({ filteredProductsData });
   } catch (error) {
     console.error("Error during scraping:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
+setInterval(() => {
+  cacheObj = {};
+}, 1000 * 60 * 10);
 module.exports = { scrape };
