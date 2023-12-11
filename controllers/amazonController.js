@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const amazonConstants = require("../constants/amazonConstants");
 const { generateAmazonUrl } = require("../utils/urlGenerator");
 let cacheObj = {};
+
 const scrape = async (req, res) => {
   try {
     const { query, sort } = req.query;

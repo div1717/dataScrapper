@@ -33,7 +33,7 @@ Follow the instructions below to set up and run the web scraper application on y
 
 3.  Start the server:
     ```
-    npm start
+    ./run_script.sh
     ```
 
 ### Routes
