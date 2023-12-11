@@ -1,4 +1,3 @@
-const PRODUCT_URL = "https://www.amazon.in/s?k=laptops";
 const PRODUCT_ELEMENT_SELECTOR = "div[class='sg-col-inner";
 const PRICE_SELECTOR =
   "div[class='a-row'] > a[class='a-link-normal s-no-hover s-underline-text s-underline-link-text s-link-style a-text-normal'] > span[class='a-price'] > span[class='a-offscreen']";
@@ -10,7 +9,6 @@ const URL_SELECTOR =
   "div[class='a-row'] > a[class='a-link-normal s-no-hover s-underline-text s-underline-link-text s-link-style a-text-normal']";
 
 module.exports = {
-  PRODUCT_URL,
   PRODUCT_ELEMENT_SELECTOR,
   PRICE_SELECTOR,
   TITLE_SELECTOR,

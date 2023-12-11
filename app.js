@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 const PORT = 3000;
+const cors = require("cors");
+app.use(cors());
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 // Routes
 const snapdealRoute = require("./routes/snapdealRoute");
@@ -20,7 +24,7 @@ app.use("/scrape/", nykaaRoute);
 app.use("/scrape/", amazonRoute);
 app.use("/scrape/", jiomartRoute);
 app.use("/scrape/", flipkartRoute);
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
